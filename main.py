@@ -26,8 +26,10 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         for port in ports:
             self.portSelect.addItem(port)
         for speed in speeds:
-            self.speedSelect.addItem(speed)
-        print ports
+            self.speedSelect.addItem(speed) 
+        
+        self.buttonConect.clicked.connect(self.connect)
+        self.buttonOn.clicked.connect(self.send)
         # self.portSelect.addItem("qqqq")
   #       self.listWidget.clear()
   #       directory = QtWidgets.QFileDialog.getExistingDirectory(self, "Open directory")
@@ -52,7 +54,6 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
             ports = glob.glob('/dev/tty.*')
         else:
             raise EnvironmentError('Unsupported platform')
-
         result = []
         for port in ports:
             try:
@@ -62,6 +63,18 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
             except (OSError, serial.SerialException):
                 pass
         return result
+
+    def connect(self):
+        try:
+            self.realport = serial.Serial(self.portSelect.currentText(),int(self.speedSelect.currentText()))
+            self.buttonConect.setStyleSheet("background-color: green")
+            self.buttonConect.setText("connect")
+        except Exception as e:
+            print(e)
+
+    def send(self):
+        if self.realport:
+            self.realport.write(b'b')
 
 def main():
 	app = QtWidgets.QApplication(sys.argv)
@@ -77,3 +90,4 @@ if __name__ == '__main__':
 
 # pip install pyserial pyqt5
 # pip install pyserial
+# pip install PyUSB
