@@ -34,11 +34,15 @@ class Screener():
 		top_led = []
 		current_led = 1
 		while current_led <= top_horizont_led_count :
+			if top_horizont_led_count * current_led > self.curent_screen["width"]:
+				break
+			# print current_led
 			red = 0
 			green = 0
 			blue = 0
 			pixel_count = 0
-			for x in range(top_horizont_led_count) :
+			# print top_horizont_led_count * current_led
+			for x in range(top_horizont_led_count * current_led - top_horizont_led_count, top_horizont_led_count * current_led) :
 				for y in range(width) :
 					pixel_count += 1
 					red += self.image[y][x][0]
@@ -48,8 +52,29 @@ class Screener():
 
 			top_led.append([red//pixel_count, green//pixel_count, blue//pixel_count]) 
 			current_led +=1
+		
 
+		# print top_led
 
+		# test prin image
+		led_image = []
+		for y in range(width) :
+			current_led = 1
+			pixels_x = []
+			while current_led <= len(top_led) :
+				for x in range(top_horizont_led_count) :
+					pixels_x.append( np.asarray(top_led[current_led-1]) )
+
+					
+				current_led +=1
+
+			led_image.append(np.asarray(pixels_x))
+
+		led_image = np.asarray(led_image)
+
+		# print  type(self.image[0])
+		# print type(led_image[14])
+		cv2.imwrite("pic_head.png", led_image)
 		# for y in range(top_horizont_led) :
 		# 	for y in range(width) :
 
@@ -67,9 +92,9 @@ class Screener():
 
 		# cv2.imshow("Screenshot", imutils.resize(image, width=600))
 		# # cv2.waitKey(5000)
-		# cv2.imwrite("pic.png", image)
+		cv2.imwrite("pic.png", self.image)
 
 screener = Screener()
 
 screener.get()	
-screener.createLight(13, 13, 13, 13, 15)
+screener.createLight(30, 13, 13, 13, 100)
